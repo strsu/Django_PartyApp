@@ -46,12 +46,34 @@ class MYFilterList(APIView):
             'hobby': userProfileQuery.up_hobby,
             'interest': userProfileQuery.up_interest,
             'datestyle': userProfileQuery.up_datestyle,
-            'requirepic': userProfileQuery.up_requirepic,
-            'extrapic': userProfileQuery.up_extrapic,
-            'mainpic': userQuery.u_mainpic,
+            'requirepic': '',
+            'extrapic': '',
+            'mainpic': '',
             'phone': userQuery.u_phone,
-            'email': userQuery.u_id
+            'email': userQuery.u_id,
         }
+    
+        if userQuery.u_mainpic:
+            _json['mainpic'] = 'mainPic ' + userQuery.u_mainpic.replace('"', '')
+        if userProfileQuery.up_requirepic:
+            img_list = []
+            for img in userProfileQuery.up_requirepic[1:-1].split(','):
+                img = img.replace('"', '')
+                if img != '':
+                    img_list.append('requirePic '+img)
+                else:
+                    img_list.append('')
+            _json['requirepic'] = img_list
+        if userProfileQuery.up_extrapic:
+            img_list = []
+            for img in userProfileQuery.up_extrapic[1:-1].split(','):
+                img = img.replace('"', '')
+                if img != '':
+                    img_list.append('extraPic '+img)
+                else:
+                    img_list.append('')
+            _json['extrapic'] = img_list
+
         return Response( {
             'filter': FilterSerializer(filerQuesry, many=True).data,
             'my': _json

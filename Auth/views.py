@@ -64,6 +64,7 @@ class Login(APIView):
                 
 
             user = User.objects.filter(u_uuid=uuid).first()
+            userprofileQuery = Userprofile.objects.get(up_useruuid=uuid)
             firebase = Firebasetoken.objects.get(fbt_useruuid=user.u_uuid)
 
             response = Response(
@@ -72,6 +73,8 @@ class Login(APIView):
                     "uuid": user.u_uuid.hex(),
                     "grade": UserSerializer(user).data["u_grade"],
                     "sex": UserSerializer(user).data["u_sex"],
+                    'mainpic': 'mainPic '+UserSerializer(user).data["u_mainpic"].replace('\"', ''),
+                    'nickname': userprofileQuery.up_nickname,
                     "fcmToken": firebase.fbt_usertoken,
                 },
                 status=status.HTTP_200_OK
