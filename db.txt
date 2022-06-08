@@ -1,0 +1,451 @@
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
+from django.db import models
+
+
+class Acquainblock(models.Model):
+    db_uuid = models.CharField(primary_key=True, max_length=16)
+    db_phone = models.CharField(max_length=45)
+
+    class Meta:
+        managed = False
+        db_table = 'acquainBlock'
+        unique_together = (('db_uuid', 'db_phone'),)
+
+
+class Anonyboard(models.Model):
+    ab_uid = models.AutoField(primary_key=True)
+    ab_writer_uuid = models.CharField(max_length=16)
+    ab_writer_a = models.CharField(max_length=20)
+    ab_sex = models.CharField(max_length=1)
+    ab_type = models.CharField(max_length=20)
+    ab_title = models.CharField(max_length=45)
+    ab_content = models.TextField()
+    ab_wdate = models.CharField(max_length=19)
+    ab_udate = models.CharField(max_length=19, blank=True, null=True)
+    ab_ddate = models.CharField(max_length=19, blank=True, null=True)
+    ab_like = models.IntegerField()
+    ab_read = models.IntegerField()
+    ab_comment = models.IntegerField()
+    ab_image = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'anonyboard'
+
+
+class AnonyboardComment(models.Model):
+    ac_uid = models.AutoField(primary_key=True)
+    ac_refid = models.IntegerField()
+    ac_replyer_uuid = models.CharField(max_length=16)
+    ac_replyer_a = models.CharField(max_length=45)
+    ac_sex = models.CharField(max_length=1)
+    ac_wdate = models.CharField(max_length=26)
+    ac_content = models.TextField()
+    ac_like = models.IntegerField()
+    ac_seqm = models.SmallIntegerField(db_column='ac_seqM')  # Field name made lowercase.
+    ac_issub = models.IntegerField(db_column='ac_isSub')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'anonyboard_comment'
+
+
+class AuthGroup(models.Model):
+    name = models.CharField(unique=True, max_length=150)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group'
+
+
+class AuthGroupPermissions(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group_permissions'
+        unique_together = (('group', 'permission'),)
+
+
+class AuthPermission(models.Model):
+    name = models.CharField(max_length=255)
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
+    codename = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_permission'
+        unique_together = (('content_type', 'codename'),)
+
+
+class AuthUser(models.Model):
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.IntegerField()
+    username = models.CharField(unique=True, max_length=150)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.CharField(max_length=254)
+    is_staff = models.IntegerField()
+    is_active = models.IntegerField()
+    date_joined = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user'
+
+
+class AuthUserGroups(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_groups'
+        unique_together = (('user', 'group'),)
+
+
+class AuthUserUserPermissions(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_user_permissions'
+        unique_together = (('user', 'permission'),)
+
+
+class AuthtokenToken(models.Model):
+    key = models.CharField(primary_key=True, max_length=40)
+    created = models.DateTimeField()
+    user = models.OneToOneField(AuthUser, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'authtoken_token'
+
+
+class Boardaddon(models.Model):
+    ba_idx = models.AutoField(primary_key=True)
+    ba_uuid = models.CharField(max_length=16)
+    ba_tablename = models.CharField(db_column='ba_tableName', max_length=15)  # Field name made lowercase.
+    ba_type = models.CharField(max_length=15)
+    ba_boardid = models.IntegerField(db_column='ba_boardID')  # Field name made lowercase.
+    ba_commentid = models.IntegerField(db_column='ba_commentID', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'boardAddon'
+
+
+class Couponlist(models.Model):
+    cl_couponid = models.CharField(db_column='cl_couponID', primary_key=True, max_length=20)  # Field name made lowercase.
+    cl_title = models.CharField(max_length=45)
+    cl_createdate = models.CharField(db_column='cl_createDate', max_length=19)  # Field name made lowercase.
+    cl_issuedate = models.CharField(db_column='cl_issueDate', max_length=19)  # Field name made lowercase.
+    cl_expiredate = models.CharField(db_column='cl_expireDate', max_length=19, blank=True, null=True)  # Field name made lowercase.
+    cl_couponcode = models.TextField(db_column='cl_couponCode', blank=True, null=True)  # Field name made lowercase.
+    cl_func = models.TextField()
+    cl_image = models.TextField()
+
+    class Meta:
+        managed = False
+        db_table = 'couponList'
+
+
+class DjangoAdminLog(models.Model):
+    action_time = models.DateTimeField()
+    object_id = models.TextField(blank=True, null=True)
+    object_repr = models.CharField(max_length=200)
+    action_flag = models.PositiveSmallIntegerField()
+    change_message = models.TextField()
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'django_admin_log'
+
+
+class DjangoContentType(models.Model):
+    app_label = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'django_content_type'
+        unique_together = (('app_label', 'model'),)
+
+
+class DjangoMigrations(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    app = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    applied = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_migrations'
+
+
+class DjangoSession(models.Model):
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.TextField()
+    expire_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_session'
+
+
+class Filter(models.Model):
+    f_uid = models.AutoField(primary_key=True)
+    f_sort = models.CharField(max_length=10)
+    f_type = models.CharField(max_length=10)
+    f_name = models.CharField(max_length=20)
+    f_seq = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'filter'
+
+
+class Firebasetoken(models.Model):
+    fbt_uid = models.AutoField(primary_key=True)
+    fbt_useruuid = models.CharField(db_column='fbt_userUUID', max_length=16)  # Field name made lowercase.
+    fbt_usertoken = models.CharField(db_column='fbt_userToken', max_length=200)  # Field name made lowercase.
+    fbt_generdate = models.CharField(db_column='fbt_generDate', max_length=19)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'firebaseToken'
+
+
+class Introblock(models.Model):
+    ib_blocker = models.CharField(primary_key=True, max_length=16)
+    ib_type = models.CharField(max_length=45)
+    ib_blocked = models.CharField(max_length=16)
+
+    class Meta:
+        managed = False
+        db_table = 'introBlock'
+        unique_together = (('ib_blocker', 'ib_blocked'),)
+
+
+class Mainparty(models.Model):
+    mp_uid = models.AutoField(primary_key=True)
+    mp_wdate = models.CharField(max_length=19)
+    mp_writer = models.CharField(max_length=16)
+    mp_title = models.CharField(max_length=20)
+    mp_type = models.CharField(max_length=20)
+    mp_place = models.CharField(max_length=20)
+    mp_content = models.TextField()
+    mp_pricem = models.IntegerField(db_column='mp_priceM')  # Field name made lowercase.
+    mp_pricef = models.IntegerField(db_column='mp_priceF')  # Field name made lowercase.
+    mp_like = models.IntegerField()
+    mp_mdate = models.CharField(max_length=19)
+    mp_support = models.CharField(max_length=45, blank=True, null=True)
+    mp_image = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'mainparty'
+
+
+class MainpartyAttend(models.Model):
+    mpa_uid = models.AutoField(primary_key=True)
+    mpa_boardid = models.IntegerField(db_column='mpa_boardID')  # Field name made lowercase.
+    mpa_useruuid = models.CharField(db_column='mpa_userUUID', max_length=16)  # Field name made lowercase.
+    mpa_attend = models.IntegerField()
+    mpa_wait = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'mainparty_attend'
+
+
+class MainpartyReviewQna(models.Model):
+    mprq_uid = models.AutoField(primary_key=True)
+    mprq_boardid = models.IntegerField()
+    mprq_type = models.CharField(max_length=1)
+    mprq_uuid = models.CharField(max_length=16)
+    mprq_ninkname = models.CharField(max_length=20)
+    mprq_content = models.TextField()
+    mprq_date = models.CharField(max_length=19)
+    mprq_adminuuid = models.CharField(max_length=16, blank=True, null=True)
+    mprq_admincontent = models.TextField(blank=True, null=True)
+    mprq_admindate = models.CharField(max_length=19, blank=True, null=True)
+    mprq_score = models.IntegerField()
+    mprq_helpcnt = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'mainparty_review_qna'
+
+
+class MainpartyTimeline(models.Model):
+    mpt_uid = models.AutoField(primary_key=True)
+    mpt_boardid = models.IntegerField()
+    mpt_time = models.CharField(max_length=13)
+    mpt_attendm = models.SmallIntegerField()
+    mpt_attendw = models.SmallIntegerField()
+    mpt_pricem = models.IntegerField()
+    mpt_pricew = models.IntegerField()
+    mpt_minagem = models.IntegerField()
+    mpt_maxagem = models.IntegerField()
+    mpt_minagew = models.IntegerField()
+    mpt_maxagew = models.IntegerField()
+    mpt_deadline = models.CharField(max_length=11)
+    mpt_condm = models.CharField(max_length=20, blank=True, null=True)
+    mpt_condw = models.CharField(max_length=20, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'mainparty_timeline'
+
+
+class Recommanduser(models.Model):
+    ru_uuida = models.CharField(db_column='ru_uuidA', primary_key=True, max_length=16)  # Field name made lowercase.
+    ru_uuidb = models.CharField(db_column='ru_uuidB', max_length=16)  # Field name made lowercase.
+    ru_rcmdate = models.CharField(db_column='ru_rcmDate', max_length=19)  # Field name made lowercase.
+    ru_dateatob = models.CharField(db_column='ru_dateAtoB', max_length=19, blank=True, null=True)  # Field name made lowercase.
+    ru_datebtoa = models.CharField(db_column='ru_dateBtoA', max_length=19, blank=True, null=True)  # Field name made lowercase.
+    ru_scoreatob = models.CharField(db_column='ru_scoreAtoB', max_length=3, blank=True, null=True)  # Field name made lowercase.
+    ru_scoebtoa = models.CharField(db_column='ru_scoeBtoA', max_length=3, blank=True, null=True)  # Field name made lowercase.
+    ru_isreject = models.CharField(db_column='ru_isReject', max_length=1, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'recommandUser'
+
+
+class User(models.Model):
+    u_uid = models.AutoField(primary_key=True)
+    u_uuid = models.CharField(max_length=16)
+    u_grade = models.CharField(max_length=1)
+    u_id = models.CharField(max_length=25)
+    u_pw = models.CharField(max_length=255)
+    u_phone = models.CharField(max_length=11)
+    u_sex = models.CharField(max_length=1)
+    u_mainpic = models.TextField(db_column='u_mainPic')  # Field name made lowercase.
+    u_point = models.IntegerField(blank=True, null=True)
+    u_emailnotify = models.CharField(db_column='u_emailNotify', max_length=1)  # Field name made lowercase.
+    u_smsnotify = models.CharField(db_column='u_smsNotify', max_length=1)  # Field name made lowercase.
+    u_pushnotify = models.CharField(db_column='u_pushNotify', max_length=1)  # Field name made lowercase.
+    u_registerdate = models.CharField(db_column='u_registerDate', max_length=19)  # Field name made lowercase.
+    u_withdrawaldate = models.CharField(db_column='u_withdrawalDate', max_length=19, blank=True, null=True)  # Field name made lowercase.
+    u_lastlogin = models.CharField(db_column='u_lastLogin', max_length=19)  # Field name made lowercase.
+    u_introcode = models.CharField(db_column='u_introCode', max_length=15)  # Field name made lowercase.
+    u_appversion = models.CharField(db_column='u_appVersion', max_length=15)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'user'
+
+
+class Userauthlist(models.Model):
+    ual_useruuid = models.CharField(db_column='ual_userUUID', primary_key=True, max_length=16)  # Field name made lowercase.
+    ual_type = models.CharField(max_length=15)
+    ual_require = models.CharField(max_length=19)
+    ual_confirm = models.CharField(max_length=19, blank=True, null=True)
+    ual_return = models.CharField(max_length=19, blank=True, null=True)
+    ual_image = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'userAuthList'
+        unique_together = (('ual_useruuid', 'ual_type'),)
+
+
+class Usercoupon(models.Model):
+    uc_idx = models.AutoField(primary_key=True)
+    uc_useruuid = models.CharField(db_column='uc_userUUID', max_length=16)  # Field name made lowercase.
+    uc_couponid = models.CharField(db_column='uc_couponID', max_length=20)  # Field name made lowercase.
+    uc_receivedate = models.CharField(db_column='uc_receiveDate', max_length=19)  # Field name made lowercase.
+    uc_expiredate = models.CharField(db_column='uc_expireDate', max_length=19)  # Field name made lowercase.
+    uc_isuse = models.CharField(db_column='uc_isUse', max_length=1)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'userCoupon'
+
+
+class Userjwttoken(models.Model):
+    ujt_useruuid = models.CharField(primary_key=True, max_length=16)
+    ujt_key = models.TextField()
+
+    class Meta:
+        managed = False
+        db_table = 'userjwttoken'
+
+
+class Userparty(models.Model):
+    up_uid = models.AutoField(primary_key=True)
+    up_useruuid = models.CharField(db_column='up_userUUID', max_length=16)  # Field name made lowercase.
+    up_nickname = models.CharField(max_length=45)
+    up_sex = models.CharField(max_length=1)
+    up_tags = models.CharField(max_length=45)
+    up_title = models.CharField(max_length=45)
+    up_content = models.TextField()
+    up_state = models.CharField(max_length=1)
+    up_wdate = models.CharField(max_length=19)
+    up_udate = models.CharField(max_length=19, blank=True, null=True)
+    up_ddate = models.CharField(max_length=19, blank=True, null=True)
+    up_mdate = models.CharField(max_length=19, blank=True, null=True)
+    up_like = models.IntegerField()
+    up_read = models.IntegerField()
+    up_image = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'userparty'
+
+
+class UserpartyAttend(models.Model):
+    upa_uid = models.AutoField(primary_key=True)
+    upa_boardid = models.IntegerField(db_column='upa_boardID')  # Field name made lowercase.
+    upa_ownuuid = models.CharField(db_column='upa_ownUUID', max_length=16)  # Field name made lowercase.
+    upa_useruuid = models.CharField(db_column='upa_userUUID', max_length=16)  # Field name made lowercase.
+    upa_attend = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'userparty_attend'
+
+
+class Userprofile(models.Model):
+    up_uid = models.AutoField(primary_key=True)
+    up_useruuid = models.CharField(db_column='up_userUUID', max_length=16)  # Field name made lowercase.
+    up_name = models.CharField(max_length=20)
+    up_sex = models.CharField(max_length=1)
+    up_birth = models.CharField(max_length=6)
+    up_height = models.CharField(max_length=3)
+    up_body = models.CharField(max_length=2)
+    up_edu = models.CharField(max_length=20)
+    up_eduname = models.CharField(max_length=20, blank=True, null=True)
+    up_live = models.CharField(max_length=20)
+    up_religion = models.CharField(max_length=2)
+    up_smoke = models.CharField(max_length=2)
+    up_alcohol = models.CharField(max_length=2)
+    up_nickname = models.CharField(max_length=20)
+    up_selfintro = models.TextField()
+    up_character = models.TextField()
+    up_hobby = models.TextField(blank=True, null=True)
+    up_interest = models.TextField(blank=True, null=True)
+    up_datestyle = models.TextField(blank=True, null=True)
+    up_requirepic = models.TextField(db_column='up_requirePic')  # Field name made lowercase.
+    up_extrapic = models.TextField(db_column='up_extraPic', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'userprofile'
