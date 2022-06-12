@@ -4,5 +4,6 @@ from Profile import views
 urlpatterns = [
 
     re_path(r'^filter/$', views.FilterList.as_view(), name=''),
-    re_path(r'^myfilter/$', views.MYFilterList.as_view(), name='')
+    re_path(r'^myfilter/$', views.MYFilterList.as_view(), name=''),
+    re_path(r'^profile/$', views.Profile.as_view(), name=''),
 ]

@@ -78,3 +78,24 @@ class MYFilterList(APIView):
             'filter': FilterSerializer(filerQuesry, many=True).data,
             'my': _json
         } ,status=status.HTTP_200_OK )
+
+class Profile(APIView):
+    def put(self, request):
+        userQuery = Userprofile.objects.get(up_useruuid=bytes.fromhex(request.headers['uuid']))
+        info = request.data['info']
+        try:
+            userQuery.up_height = info['Height']
+            userQuery.up_body = info['Body']
+            userQuery.up_edu = info['Grade']
+            userQuery.up_eduname = info['eduname']
+            userQuery.up_live = f"{info['Region']} {info['RegionAddon']}"
+            userQuery.up_religion = info['Religion']
+            userQuery.up_smoke = info['Smoke']
+            userQuery.up_alcohol = info['Alcohol']
+            userQuery.up_selfintro = info['aboutMe']
+            userQuery.up_character = info['character']
+            userQuery.save()
+            return Response( status=status.HTTP_200_OK )
+        except Exception:
+            print(Exception)
+            return Response( status=status.HTTP_400_BAD_REQUEST )
