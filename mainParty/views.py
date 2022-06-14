@@ -41,7 +41,6 @@ class Board(APIView):
     def get(self, request):
         board_id_list = []
         board_like_list = []
-        print(request.GET)
 
         # 파라미터
         userUUID  = bytes.fromhex(request.headers['uuid'])
@@ -49,27 +48,29 @@ class Board(APIView):
         fetchType = request.GET['type']      # 0: 처음 접속 / 1: 최신 글 / 2: 이전 글
         uid       = request.GET['page']      # 글 id
 
-        startDay = request.GET['startDay']
-        endDay = request.GET['endDay']
-        location = json.loads(request.GET['location'])
-        age = json.loads(request.GET['age'])
-
         # 게시판 리스트 가져오기
         filterQuery = Q()
 
         boardQuery = Mainparty.objects.prefetch_related()
 
-        if startDay != '' and endDay == '':
-            filterQuery.add(Q(mp_mdate=startDay), Q.AND)
-        else:
-            if startDay != '' and endDay != '':
-                filterQuery.add(Q(mp_mdate__range=(startDay, endDay)), Q.AND)
+        if 'startDay' in request.GET:
+            startDay = request.GET['startDay']
+            endDay = request.GET['endDay']
+            if startDay != '' and endDay == '':
+                filterQuery.add(Q(mp_mdate=startDay), Q.AND)
+            else:
+                if startDay != '' and endDay != '':
+                    filterQuery.add(Q(mp_mdate__range=(startDay, endDay)), Q.AND)
         
-        if len(location) > 0:
-            filterQuery.add(Q(mp_place__in=location), Q.AND)
+        if 'location' in request.GET:
+            location = json.loads(request.GET['location'])
+            if len(location) > 0:
+                filterQuery.add(Q(mp_place__in=location), Q.AND)
         
-        if age[0] != 0 or age[1] != 100:
-            filterQuery.add(Q(mp_minage__gt=age[0], mp_maxage__lt=age[1]), Q.AND)
+        if 'age' in request.GET:
+            age = json.loads(request.GET['age'])
+            if age[0] != 0 or age[1] != 100:
+                filterQuery.add(Q(mp_minage__gt=age[0], mp_maxage__lt=age[1]), Q.AND)
 
         if fetchType == '0': # 처음 데이터
             boardQuery = Mainparty.objects.prefetch_related().filter(filterQuery).order_by('mp_uid').reverse()[:10]
@@ -80,7 +81,7 @@ class Board(APIView):
             filterQuery.add(Q(mp_uid__lt=uid), Q.AND)
             boardQuery = Mainparty.objects.prefetch_related().filter(filterQuery).order_by('mp_uid').reverse()[:10]
         
-        print(boardQuery._query)
+        #print(boardQuery._query)
 
         if len(boardQuery) == 0:
             return Response( status=status.HTTP_204_NO_CONTENT )
@@ -95,7 +96,7 @@ class Board(APIView):
                                             ba_type='like')
         board_like_list = [val.ba_boardid for val in addonQuery]
 
-        timelineQuery = MainpartyTimeline.objects.filter(mpt_boardid__in=board_id_list)
+        timelineQuery = MainpartyTimeline.objects.filter(mpt_boardid__in=board_id_list).order_by('mpt_time')
         timeline_dict = {}
         for val in timelineQuery:
             _json = {}

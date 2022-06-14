@@ -5,7 +5,7 @@ from firebase_admin import credentials, messaging
 
 import os
 
-cred = credentials.Certificate(os.path.join(settings.BASE_DIR, "backend/serviceAccountKey.json"))
+cred = credentials.Certificate(os.path.join(settings.BASE_DIR, "backend/fire.json"))
 default_app = firebase_admin.initialize_app(cred)
 
 def send_to_firebase_cloud_notification(clientToken, title):
