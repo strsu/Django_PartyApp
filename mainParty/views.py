@@ -129,14 +129,21 @@ class Board(APIView):
             _json["content"] = val.mp_content
             _json["minage"]  = val.mp_minage
             _json["maxage"]  = val.mp_maxage
-            _json["images"]  = val.mp_image
+            _json["images"]  = ''
             _json["like"]    = val.mp_like in board_like_list and True or False
             _json["mdate"]   = val.mp_mdate
             _json["support"] = val.mp_support
             _json["timeline"] = val.mp_uid in timeline_dict and timeline_dict[val.mp_uid] or {}
 
             if val.mp_image != '':
-                _json["images"]   = settings.MEDIA_URL + '?imageName=mainParty ' + val.mp_image
+                img_list = []
+                for img in val.mp_image[1:-1].split(','):
+                    img = img.replace('"', '')
+                    if img != '':
+                        img_list.append('mainParty '+img)
+                    else:
+                        img_list.append('')
+                _json["images"]   = img_list
 
             board_list.append(_json)
         
@@ -244,8 +251,15 @@ class QNA(APIView):
 class Attend(APIView):
     def get(self, request):
         uid = request.GET['uid']
-
-        attendQuery = MainpartyAttend.objects.filter(mpa_boardid=uid)
+        
+        if 'my' in request.GET:
+            try:
+                attendQuery = MainpartyAttend.objects.get(mpa_boardid=uid, mpa_useruuid=bytes.fromhex(request.headers['uuid']))
+                return Response({'AttendTime': attendQuery.mpa_timeline}, status=status.HTTP_200_OK)
+            except Exception:
+                return Response({'AttendTime': ''}, status=status.HTTP_200_OK)
+        else:
+            attendQuery = MainpartyAttend.objects.filter(mpa_boardid=uid)
         attend_list = []
         for val in attendQuery:
             _json = {}
